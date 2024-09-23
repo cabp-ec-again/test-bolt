@@ -21,7 +21,7 @@ export default async function pokemonCreateRequestHandler(
 
   if (errors.length) {
     return {
-      status: errors[0].status ?? 400,
+      status: 400,
       data: null,
       errors
     };
