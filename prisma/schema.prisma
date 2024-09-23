@@ -1,20 +1,100 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "sqlite"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model Ability {
+  ability_id        Int              @id(map: "pk_abilities") @unique(map: "abilities_pk") @default(autoincrement())
+  name              String           @db.VarChar(64)
+  description       String?          @db.VarChar(255)
+  created_at        DateTime         @default(now()) @db.Date
+  updated_at        DateTime?        @db.Date
+  pokemon_abilities PokemonAbility[]
 
-    @@index([name])
+  @@map("abilities")
+}
+
+model EggGroup {
+  egg_group_id   Int            @id(map: "pk_egg_groups") @unique(map: "egg_groups_pk") @default(autoincrement())
+  name           String         @db.VarChar(64)
+  description    String?        @db.VarChar(255)
+  created_at     DateTime       @default(now()) @db.Date
+  updated_at     DateTime?      @db.Date
+  pokemon_groups PokemonGroup[]
+
+  @@map("egg_groups")
+}
+
+model PokeType {
+  poketype_id          Int           @id(map: "pk_poke_types") @unique(map: "poke_types_pk") @default(autoincrement())
+  poketype_name        String        @db.VarChar(64)
+  poketype_description String?       @db.VarChar(255)
+  poketype_created_at  DateTime      @default(now()) @db.Date
+  poketype_updated_at  DateTime?     @db.Date
+  pokemon_types        PokemonType[]
+
+  @@map("poke_types")
+}
+
+model PokemonAbility {
+  ability_id Int
+  pokemon_id Int
+  abilities  Ability @relation(fields: [ability_id], references: [ability_id], onUpdate: Restrict, map: "fk_pa_ability")
+  pokemons   Pokemon @relation(fields: [pokemon_id], references: [pokemon_id], onUpdate: Restrict, map: "fk_pa_pokemon")
+
+  @@id([ability_id, pokemon_id], map: "pk_pokemon_abilities")
+  @@unique([ability_id, pokemon_id], map: "pokemon_abilities_pk")
+  @@index([ability_id], map: "abilities_pokemons_fk")
+  @@index([pokemon_id], map: "pokemon_abilities2_fk")
+  @@map("pokemon_abilities")
+}
+
+model PokemonGroup {
+  pokemon_id   Int
+  egg_group_id Int
+  egg_groups   EggGroup @relation(fields: [egg_group_id], references: [egg_group_id], onUpdate: Restrict, map: "fk_pg_group")
+  pokemons     Pokemon  @relation(fields: [pokemon_id], references: [pokemon_id], onUpdate: Restrict, map: "fk_pg_pokemon")
+
+  @@id([pokemon_id, egg_group_id], map: "pk_pokemon_groups")
+  @@unique([pokemon_id, egg_group_id], map: "pokemon_groups_pk")
+  @@index([egg_group_id], map: "pokemon_groups2_fk")
+  @@index([pokemon_id], map: "pokemons_groups_fk")
+  @@map("pokemon_groups")
+}
+
+model PokemonType {
+  poketype_id Int
+  pokemon_id  Int
+  poke_types  PokeType @relation(fields: [poketype_id], references: [poketype_id], onUpdate: Restrict, map: "fk_pt_type")
+  pokemons    Pokemon  @relation(fields: [pokemon_id], references: [pokemon_id], onUpdate: Restrict, map: "fk_py_pokemon")
+
+  @@id([poketype_id, pokemon_id], map: "pk_pokemon_types")
+  @@unique([poketype_id, pokemon_id], map: "pokemon_types_pk")
+  @@index([pokemon_id], map: "pokemon_types2_fk")
+  @@index([poketype_id], map: "types_pokemons_fk")
+  @@map("pokemon_types")
+}
+
+model Pokemon {
+  pokemon_id            Int              @id(map: "pk_pokemons") @unique(map: "pokemons_pk") @default(autoincrement())
+  name                  String           @unique(map: "constraint_name") @db.VarChar(64)
+  number                Int
+  description           String           @db.VarChar(255)
+  evolution_description String?          @db.VarChar(255)
+  height                Float
+  weight                Float
+  gender_ratio_male     Float
+  gender_ratio_female   Float
+  evolution             Int?
+  created_at            DateTime         @default(now()) @db.Date
+  updated_at            DateTime?        @db.Date
+  pokemon_abilities     PokemonAbility[]
+  pokemon_groups        PokemonGroup[]
+  pokemon_types         PokemonType[]
+
+  @@map("pokemons")
 }

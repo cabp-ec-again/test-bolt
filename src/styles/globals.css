@@ -1,3 +1,133 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  background-image: url("/img/wallpaperflare.jpg");
+  background-size: 100%;
+  /*background: var(--background);*/
+  font-family: Inter, Arial, Helvetica, sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* LOADER */
+/* HTML: <div class="loader"></div> */
+.loader {
+  height: 60px;
+  aspect-ratio: 1;
+  position: relative;
+}
+
+.loader::before,
+.loader::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  transform-origin: bottom;
+}
+
+.loader::after {
+  background: radial-gradient(at 75% 15%, #fffb, #0000 35%),
+  radial-gradient(at 80% 40%, #0000, #0008),
+  radial-gradient(circle 5px, #fff 94%, #0000),
+  radial-gradient(circle 10px, #000 94%, #0000),
+  linear-gradient(#F93318 0 0) top   /100% calc(50% - 5px),
+  linear-gradient(#fff 0 0) bottom/100% calc(50% - 5px) #000;
+  background-repeat: no-repeat;
+  animation: l20 1s infinite cubic-bezier(0.5, 120, 0.5, -120);
+}
+
+.loader::before {
+  background: rgba(221, 221, 221, 0.25);
+  filter: blur(8px);
+  transform: scaleY(0.4) translate(-13px, 0px);
+}
+
+@keyframes l20 {
+  30%, 70% {
+    transform: rotate(0deg)
+  }
+  49.99% {
+    transform: rotate(0.2deg)
+  }
+  50% {
+    transform: rotate(-0.2deg)
+  }
+}
+
+/* ICONS */
+span.icon {
+  display: inline-block;
+  min-height: 1em;
+  min-width: 1em;
+}
+
+span.icon.icon-male {
+  mask: url(/img/gender-male.svg) no-repeat center / contain;
+  -webkit-mask: url(/img/gender-male.svg) no-repeat center / contain;
+}
+
+span.icon.icon-female {
+  mask: url(/img/gender-female.svg) no-repeat center / contain;
+  -webkit-mask: url(/img/gender-female.svg) no-repeat center / contain;
+}
+
+/* NUMBER INPUT */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* MAIN CONTENT */
+main.page-content {
+  margin-top: 8rem;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* SIZE */
+.max-w-modal {
+  max-width: calc(100% - 10em) !important;
+}
+
+.max-w-modal .content {
+  max-height: calc(42rem) !important;
+}
+
+/* CHARACTER BOOK */
+div.character-book {
+  background-image: url("/img/character_book.png");
+  background-size: 712px 510px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  height: 510px;
+  width: 712px;
+}
